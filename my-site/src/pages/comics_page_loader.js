@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-const PRELOAD_RANGE = 2; // Кол-во страниц перед и после текущей для предзагрузки
-
-const LAST_AVALIABLE = 1239;
-
 const pagesPathURL = (id) => {
-    return `https://tkuniverse.space/ru/pages/${id}.png`
+    return `https://tkuniverse.space/en/pages/${id}.png`
 }
 
-const cpl = (pageId, onPageChange) => {
+const cpl = (pageId, onPageChange, PRELOAD_RANGE, LAST_AVALIABLE) => {
     const [currentPage, setCurrentPage] = useState(null);
     const [pages, setPages] = useState({});
     const loadPage = (id) => {
