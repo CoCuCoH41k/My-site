@@ -3,8 +3,17 @@
 @tailwind utilities;
 @tailwind anitaions;
 
+:root {
+  --primary-color: #413d36;
+  --secondary-color: #312d26;
+  --accent-color: white;
+  --transition-duration: 0.25s;
+  --button-size: 40px;
+}
+
+
 body {
-  background: #343434;
+  background: var(--secondary-color);
   user-select: none;
 }
 
@@ -19,7 +28,7 @@ svg {
   align-items: center;
   justify-content: space-between;
 
-  background-color: #505050;
+  background-color: var(--primary-color);
 }
 
 .navigation-pages-display {
@@ -29,7 +38,7 @@ svg {
   align-items: center;
   justify-content: center;
   background-color: transparent;
-  color: white;
+  color: var(--accent-color);
 }
 
 .navigation-buttons {
@@ -42,23 +51,23 @@ svg {
   background-color: transparent;
   opacity: 1;
   filter: invert(0);
-  transition: all 0.25s ease-in-out;
+  transition: all var(--transition-duration) ease-in-out;
 }
 
 .navigation-buttons:hover {
   opacity: 0.9; 
   filter: invert(1);
-  transition: all 0.25s ease-in-out;
+  transition: all var(--transition-duration) ease-in-out;
 }
 
 .navigation-buttons:disabled {
   opacity: 0.7;
   filter: invert(0);
-  transition: all 0.25s ease-in-out;
+  transition: all var(--transition-duration) ease-in-out;
 }
 
 .navigation-buttons:disabled:hover {
   opacity: 0.5;
   filter: invert(0);
-  transition: all 0.25s ease-in-out;
+  transition: all var(--transition-duration) ease-in-out;
 }

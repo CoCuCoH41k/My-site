@@ -64,6 +64,16 @@ const cpl = (pageId, onPageChange, PRELOAD_RANGE, LAST_AVALIABLE) => {
         }
     }
 
+    const handleSetPage = (routerPageId, lastPageId) => {
+        if (0 >= routerPageId && routerPageId > LAST_AVALIABLE) return;
+
+        if (pages[routerPageId]) {
+            onPageChange(routerPageId)
+        } else {
+            loadPage(routerPageId).finally(onPageChange(routerPageId))
+        }
+    }
+
     return ({
         page_image: currentPage,
         prev_loaded: pages[pageId - 1],
@@ -73,7 +83,8 @@ const cpl = (pageId, onPageChange, PRELOAD_RANGE, LAST_AVALIABLE) => {
             first: handleFirstPage,
             prev: handlePrevPage,
             next: handleNextPage,
-            last: handleLastPage
+            last: handleLastPage,
+            setPage: handleSetPage,
         }
     });
 };
