@@ -6,10 +6,8 @@ import { useEffect, useState } from "react";
 import { First, Back, Next, Last } from "@/svg/Navigation_SVGs.jsx";
 import { Boosty, Discord, DeviantArt, FullScreen, Settings, Share, Furaffinity, En, Ru } from "@/svg/Other_SVGs.jsx";
 import Multi_Lang_Button from "./lang_button.js";
+
 const PRELOAD_RANGE = 2; // Кол-во страниц перед и после текущей для предзагрузки
-
-const LAST_AVALIABLE = 1239;
-
 
 export default function Home() {
   
@@ -30,10 +28,11 @@ export default function Home() {
     localStorage.setItem('_pageID', pageId)
   }
 
-  const page_backend = page_loader(currentPageId, setCPID, PRELOAD_RANGE, LAST_AVALIABLE);
+  const page_backend = page_loader(currentPageId, setCPID, PRELOAD_RANGE);
   const currentPage = page_backend.page_image
   const nextPage = page_backend.next_loaded
   const prevPage = page_backend.prev_loaded
+  const lastAvailablePage = page_backend.lastAvailablePage
 
   const navHooks = page_backend.nav
 
@@ -60,7 +59,15 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       <div className="flex-1 relative">
-        {currentPage && <img src={currentPage.src} alt="page" className="absolute top-0 left-0 w-full h-full object-contain p-2"/>}
+        {currentPage && (
+            <div className="page absolute top-0 left-0 w-full h-full p-2">
+              <img
+                  src={currentPage.src}
+                  alt="page"
+                  className="object-contain max-w-full max-h-full m-auto"
+              />
+            </div>
+        )}
       </div>
       <div class="navigation-bar" alt="hotbar">
         <div className="flex items-center space-x-3 px-1" alt="promo-navigation">
@@ -72,9 +79,9 @@ export default function Home() {
         <div className="flex items-center space-x-3 " alt="pages-navigation">
           <button class="navigation-buttons" onClick={navHooks.first} disabled={1 === currentPageId}    ><First/></button>
           <button class="navigation-buttons" onClick={navHooks.prev}  disabled={!prevPage}><Back /></button>
-          <div class="navigation-pages-display">{currentPageId}/{LAST_AVALIABLE}</div>
+          <div class="navigation-pages-display">{currentPageId}/{lastAvailablePage}</div>
           <button class="navigation-buttons" onClick={navHooks.next}  disabled={!nextPage}><Next /></button>
-          <button class="navigation-buttons" onClick={navHooks.last}  disabled={LAST_AVALIABLE === currentPageId}    ><Last /></button>
+          <button class="navigation-buttons" onClick={navHooks.last}  disabled={lastAvailablePage === currentPageId}    ><Last /></button>
         </div>
         <div className="flex items-center space-x-3 px-1" alt="other-navigation">
           <Multi_Lang_Button/>

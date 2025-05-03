@@ -17,7 +17,6 @@
 /coverage
 
 # next.js
-/my-site/.next
 /my-site/node_modules
 /out/
 

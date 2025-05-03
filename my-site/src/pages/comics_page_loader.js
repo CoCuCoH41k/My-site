@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react';
 
 const pagesPathURL = (id) => {
-    return `https://tkuniverse.space/en/pages/${id}.png`
-}
+    return `http://localhost:5053/pages/${id}`;
+};
 
-const cpl = (pageId, onPageChange, PRELOAD_RANGE, LAST_AVALIABLE) => {
+const cpl = (pageId, onPageChange, PRELOAD_RANGE) => {
     const [currentPage, setCurrentPage] = useState(null);
     const [pages, setPages] = useState({});
+    const [lastAvailablePage, setLastAvailablePage] = useState(0); // Новое состояние
+
+    // Загрузка количества страниц с сервера
+    useEffect(() => {
+        fetch('http://localhost:5053/pages/count')
+            .then(response => response.json())
+            .then(count => {
+                setLastAvailablePage(count.count);
+            })
+            .catch(error => {
+                console.error('Ошибка получения количества страниц:', error);
+                setLastAvailablePage(0); // Значение по умолчанию
+            });
+    }, []);
+
     const loadPage = (id) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -33,7 +48,7 @@ const cpl = (pageId, onPageChange, PRELOAD_RANGE, LAST_AVALIABLE) => {
 
         preloadPages(pageId + 1, pageId + PRELOAD_RANGE);
         preloadPages(pageId - PRELOAD_RANGE, pageId - 1);
-        
+
     }, [pageId]);
 
     const handleNextPage = () => {
@@ -57,15 +72,15 @@ const cpl = (pageId, onPageChange, PRELOAD_RANGE, LAST_AVALIABLE) => {
     }
 
     const handleLastPage = () => {
-        if (pages[LAST_AVALIABLE]) {
-            onPageChange(LAST_AVALIABLE)
+        if (pages[lastAvailablePage]) {
+            onPageChange(lastAvailablePage)
         } else {
-            loadPage(LAST_AVALIABLE).finally(onPageChange(LAST_AVALIABLE))
+            loadPage(lastAvailablePage).finally(onPageChange(lastAvailablePage))
         }
     }
 
-    const handleSetPage = (routerPageId, lastPageId) => {
-        if (0 >= routerPageId && routerPageId > LAST_AVALIABLE) return;
+    const handleSetPage = (routerPageId) => {
+        if (routerPageId < 1 || routerPageId > lastAvailablePage) return;
 
         if (pages[routerPageId]) {
             onPageChange(routerPageId)
@@ -85,7 +100,8 @@ const cpl = (pageId, onPageChange, PRELOAD_RANGE, LAST_AVALIABLE) => {
             next: handleNextPage,
             last: handleLastPage,
             setPage: handleSetPage,
-        }
+        },
+        lastAvailablePage: lastAvailablePage // Возвращаем значение для использования вне cpl
     });
 };
 
